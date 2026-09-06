@@ -1,9 +1,9 @@
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-8.
-9.
+1. settings set target.run-args hello 123
+2. b main
+3. n
+4. s
+5. c
+6. p variable
+7. frame variable x
+8. fr variable
+9. q
