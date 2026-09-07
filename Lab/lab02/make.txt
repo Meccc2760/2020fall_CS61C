@@ -1,7 +1,7 @@
-1.
-2.
-3.
-4.
-5.
-6.
-7.
+1. clean (rm -rf core *.o *~ "#"*"#" Makefile.bak $(BINARIES) *.dSYM)
+2. all: $(BINARIES)
+3. gcc
+4. c99
+5. $(FOO)
+6. MacOS
+7. line32 ($(CC) $(CFLAGS) -g -o $(LFSR_PROG) $(LFSR_OBJS) $(LDFLAGS))
