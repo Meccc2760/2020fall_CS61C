@@ -77,7 +77,13 @@ main:
 # Think: why might having a1 be useful?
 f:
     # YOUR CODE GOES HERE!
-
+    # syntax: a0 = output[a0+3]
+    # let t0 be index, and t1 be the result
+    addi t0, a0, 3 
+    slli t3, t0, 2 # t3 = offset
+    add t2, a1, t3 # t2 = arr+offset
+    lw t1, 0(t2)
+    addi a0, t1, 0
     jr ra               # Always remember to jr ra after your function!
 
 print_int:
