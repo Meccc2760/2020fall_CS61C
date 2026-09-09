@@ -30,31 +30,31 @@ fun:
 
 main:
     # BEGIN PROLOGUE
-    addi sp, sp, -20
-    sw s0, 0(sp)
+    addi sp, sp, -20 # init stack for main
+    sw s0, 0(sp) # sp would hold the address of s0-s3 and ra
     sw s1, 4(sp)
     sw s2, 8(sp)
     sw s3, 12(sp)
     sw ra, 16(sp)
     # END PROLOGUE
-    addi t0, x0, 0
-    addi s0, x0, 0
-    la s1, source
-    la s2, dest
+    addi t0, x0, 0 # t0 = 0
+    addi s0, x0, 0 # s0 = 0
+    la s1, source # s1 = &source
+    la s2, dest # s2 = &dest
 loop:
-    slli s3, t0, 2
-    add t1, s1, s3
-    lw t2, 0(t1)
-    beq t2, x0, exit
-    add a0, x0, t2
-    addi sp, sp, -8
+    slli s3, t0, 2 # s3 += t0*4
+    add t1, s1, s3 # t1 = s1 + t0*4 (move next), t1 is an address
+    lw t2, 0(t1) # t2 = *t1
+    beq t2, x0, exit 
+    add a0, x0, t2 # a0 = t2
+    addi sp, sp, -8 # init stack for func
     sw t0, 0(sp)
     sw t2, 4(sp)
     jal fun
-    lw t0, 0(sp)
+    lw t0, 0(sp) # clear func frame
     lw t2, 4(sp)
-    addi sp, sp, 8
-    add t2, x0, a0
+    addi sp, sp, 8 
+    add t2, x0, a0 # t2 = a0 (new a0)
     add t3, s2, s3
     sw t2, 0(t3)
     add s0, s0, t2
