@@ -1,20 +1,21 @@
 --- not autograded ---
 
 Part 1
-    blocksize = 20, n = 100: 
-    blocksize = 20, n = 1000: 
-    blocksize = 20, n = 2000: 
-    blocksize = 20, n = 5000: 
-    blocksize = 20, n = 10000: 
+    blocksize = 20, n = 100: 0.007ms
+    blocksize = 20, n = 1000: 0.558ms
+    blocksize = 20, n = 2000: 1.932ms
+    blocksize = 20, n = 5000: 15.503ms
+    blocksize = 20, n = 10000: 62.734ms
 
-    Checkoff Question 1:
-    Checkoff Question 2:
+    Checkoff Question 1: at n = 2000
+    Checkoff Question 2: calculating and processing time is larger than cache miss penalty when matrix size is small.
 
 Part 2
-    blocksize = 50, n = 10000:
-    blocksize = 100, n = 10000:
-    blocksize = 500, n = 10000:
-    blocksize = 1000, n = 10000:
-    blocksize = 5000, n = 10000:
+    blocksize = 50, n = 10000: 54.002ms
+    blocksize = 100, n = 10000: 45.977ms
+    blocksize = 500, n = 10000: 51.429ms
+    blocksize = 1000, n = 10000: 49.147ms
+    blocksize = 5000, n = 10000: 110.017ms
 
-    Checkoff Question 3:
+    Checkoff Question 3: when the set blocksize too big, it goes beyond system cache block size, 
+    data can be evicted before being used, hence fail to increase performance.

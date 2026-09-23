@@ -233,7 +233,7 @@ This will run some matrix multiplications according to the six different impleme
 
 ### Matrix Transposition
 
-Sometimes, we wish to swap the rows and columns of a matrix. This operation is called a “transposition” and an efficient implementation can be quite helpful while performing more complicated linear algebra operations. The transpose of matrix A is often denoted as A^(T).
+Sometimes, we wish to swap the rows and columns of a matrix. This operation is called a “transposition” and an efficient implementation can be quite helpful while performing more complicated linear algebra operations. The transpose of matrix A is often denoted as $A^T$.
 
 ![](./lab09img/matTnorm.png)
 
