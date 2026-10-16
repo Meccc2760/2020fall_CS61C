@@ -37,8 +37,11 @@ void v_add_optimized_adjacent(double* x, double* y, double* z) {
   // Do NOT use the `for` directive here!
   #pragma omp parallel
   {
-    for(int i=0; i<ARRAY_SIZE; i++)
+    int tid = omp_get_thread_num();
+    int n = omp_get_num_threads();
+    for(int i=tid; i<ARRAY_SIZE; i+=n){
       z[i] = x[i] + y[i];
+    }
   }
 }
 
@@ -48,7 +51,15 @@ void v_add_optimized_chunks(double* x, double* y, double* z) {
   // Do NOT use the `for` directive here!
   #pragma omp parallel
   {
-    for(int i=0; i<ARRAY_SIZE; i++)
+    int tid = omp_get_thread_num();
+    int n = omp_get_num_threads();
+    int chunck_size = (ARRAY_SIZE + n - 1) / n;
+    int start = chunck_size*tid;
+    int end = chunck_size*(tid+1);
+    if(end > ARRAY_SIZE){
+      end = ARRAY_SIZE;
+    }
+    for(int i=start; i<end; i++)
       z[i] = x[i] + y[i];
   }
 }
@@ -75,10 +86,17 @@ double dotp_manual_optimized(double* x, double* y, int arr_size) {
   double global_sum = 0.0;
   #pragma omp parallel
   {
-    #pragma omp for
-    for (int i = 0; i < arr_size; i++)
-      #pragma omp critical
-      global_sum += x[i] * y[i];
+    int tid = omp_get_thread_num();
+    int n = omp_get_num_threads();
+    double local_sum = 0.0;
+
+    for (int i = tid; i < arr_size; i+=n){
+      local_sum += x[i]*y[i];
+    }
+    #pragma omp critical
+    {
+      global_sum += local_sum;
+    }
   }
   return global_sum;
 }
@@ -88,13 +106,11 @@ double dotp_reduction_optimized(double* x, double* y, int arr_size) {
   // TODO: Modify this function
   // Please DO use the `reduction` directive here!
   double global_sum = 0.0;
-  #pragma omp parallel
-  {
-    #pragma omp for
-    for (int i = 0; i < arr_size; i++)
-      #pragma omp critical
-      global_sum += x[i] * y[i];
+  #pragma omp parallel for reduction(+:global_sum)
+  for (int i = 0; i < arr_size; i++){
+    global_sum += x[i] * y[i];
   }
+
   return global_sum;
 }
 // END PART 1 EX 3
