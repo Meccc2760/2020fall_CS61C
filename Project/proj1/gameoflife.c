@@ -22,14 +22,110 @@
 //and the left column as adjacent to the right column.
 Color *evaluateOneCell(Image *image, int row, int col, uint32_t rule)
 {
-	//YOUR CODE HERE
+	Color* pixel = calloc(1, sizeof(Color));
+	if (pixel == NULL){
+		return NULL;
+	}
+
+	Color* curr = image->image[row * image->cols + col];
+	for (int b = 0; b < 8; ++b){
+		int alive = (curr->R >> b) & 1;
+	    int neighbours = 0;
+		for (int i = -1; i < 2; ++i){
+			for (int j = -1; j < 2; ++j){
+				if (i == 0 && j == 0){
+					continue;
+				}
+
+				int nr = (row + i + image->rows) % image->rows;
+        		int nc = (col + j + image->cols) % image->cols;
+				Color* neighbor = image->image[nr * image->cols + nc];
+        		neighbours += (neighbor->R >> b) & 1;
+			}
+		}
+		int index = alive ? 9 + neighbours : neighbours;
+		int next = (rule >> index) & 1;
+
+		if(next){
+			pixel->R |= (1u << b);
+		}
+	}
+
+	for (int b = 0; b < 8; ++b){
+		int alive = (curr->G >> b) & 1;
+	    int neighbours = 0;
+		for (int i = -1; i < 2; ++i){
+			for (int j = -1; j < 2; ++j){
+				if (i == 0 && j == 0){
+					continue;
+				}
+
+				int nr = (row + i + image->rows) % image->rows;
+        		int nc = (col + j + image->cols) % image->cols;
+				Color* neighbor = image->image[nr * image->cols + nc];
+        		neighbours += (neighbor->G >> b) & 1;
+			}
+		}
+		int index = alive ? 9 + neighbours : neighbours;
+		int next = (rule >> index) & 1;
+
+		if(next){
+			pixel->G |= (1u << b);
+		}
+	}
+
+	for (int b = 0; b < 8; ++b){
+		int alive = (curr->B >> b) & 1;
+	    int neighbours = 0;
+		for (int i = -1; i < 2; ++i){
+			for (int j = -1; j < 2; ++j){
+				if (i == 0 && j == 0){
+					continue;
+				}
+
+				int nr = (row + i + image->rows) % image->rows;
+        		int nc = (col + j + image->cols) % image->cols;
+				Color* neighbor = image->image[nr * image->cols + nc];
+        		neighbours += (neighbor->B >> b) & 1;
+			}
+		}
+		int index = alive ? 9 + neighbours : neighbours;
+		int next = (rule >> index) & 1;
+
+		if(next){
+			pixel->B |= (1u << b);
+		}
+	}
+
+	return pixel;
 }
 
 //The main body of Life; given an image and a rule, computes one iteration of the Game of Life.
 //You should be able to copy most of this from steganography.c
 Image *life(Image *image, uint32_t rule)
 {
-	//YOUR CODE HERE
+	Image* new_image = malloc(sizeof(Image));
+	if(new_image == NULL){
+        return NULL;
+    }
+	new_image->rows = image->rows;
+	new_image->cols = image->cols;
+	new_image->image = malloc(new_image->cols * new_image->rows * sizeof(Color*));
+	if(new_image->image == NULL){
+        free(new_image);
+        return NULL;
+    }
+	for(int i = 0; i < new_image->rows; ++i){
+		for(int j = 0; j < new_image->cols; ++j){
+			Color* pixel = evaluateOneCell(image, i, j, rule);
+            if(pixel == NULL){
+                freeImage(new_image);
+                return NULL;
+            }
+            new_image->image[i * new_image->cols + j] = pixel;}
+	}
+
+	return new_image;
 }
 
 /*
@@ -48,6 +144,26 @@ Make sure to free all memory before returning!
 You may find it useful to copy the code from steganography.c, to start.
 */
 int main(int argc, char **argv)
-{
-	//YOUR CODE HERE
+{	
+	if(argc != 3){
+		return -1;
+	}
+	char* filename = argv[1];
+	uint32_t rule = (uint32_t)strtoul(argv[2], NULL, 0);
+
+	Image* image = readData(filename);
+	if(image == NULL){
+		return -1;
+	}
+	Image* new_image = life(image, rule);
+	if(new_image == NULL){
+		freeImage(image);
+		return -1;
+	}
+	writeData(new_image);
+
+	freeImage(image);
+	freeImage(new_image);
+
+	return 0;
 }
